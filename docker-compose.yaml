@@ -1,0 +1,33 @@
+services: 
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=123
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+  postgres-admin:
+    image: dpage/pgadmin4:8
+    container_name: postgres-admin
+    ports:
+      - "2345:2345"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=123
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+      - PGADMIN_LISTEN_PORT=2345
+      - PGADMIN_CONFIG_LOGIN_BANNER="Postgres Admin dashboard for PDS backend"
